@@ -1,0 +1,133 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Shorts Idea Generator</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #101322;
+      color: white;
+      padding: 30px 16px;
+    }
+    .container {
+      max-width: 720px;
+      margin: 40px auto;
+      background: #1b2035;
+      padding: 28px;
+      border-radius: 18px;
+      box-sizing: border-box;
+    }
+    h1 { color: #a99cff; }
+    p { color: #c8cce0; line-height: 1.6; }
+    label { display: block; margin: 18px 0 8px; }
+    select, textarea, button {
+      width: 100%;
+      padding: 13px;
+      border-radius: 9px;
+      font-size: 16px;
+      box-sizing: border-box;
+    }
+    select, textarea {
+      background: #101322;
+      color: white;
+      border: 1px solid #454b68;
+    }
+    textarea { min-height: 100px; }
+    button {
+      margin-top: 18px;
+      border: 0;
+      background: #7965f5;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    #output {
+      margin-top: 22px;
+      padding: 18px;
+      background: #101322;
+      border-radius: 10px;
+      white-space: pre-wrap;
+      line-height: 1.7;
+    }
+    .note { font-size: 13px; color: #aeb5ce; }
+  </style>
+</head>
+<body>
+  <main class="container">
+    <h1>🎬 AI Shorts Idea Generator</h1>
+    <p>Create funny short-video concepts, hooks and 15-second prompts for your next video.</p>
+
+    <label for="category">Choose your video category</label>
+    <select id="category">
+      <option>Funny Baby Comedy</option>
+      <option>Family Comedy</option>
+      <option>Funny Animals</option>
+      <option>Unexpected Twist</option>
+    </select>
+
+    <label for="details">Describe your idea (optional)</label>
+    <textarea id="details" placeholder="Example: A toddler catches Dad secretly eating cookies..."></textarea>
+
+    <button onclick="generateIdea()">Generate Video Idea</button>
+
+    <div id="output" aria-live="polite">Your video idea will appear here.</div>
+    <button onclick="copyIdea()">Copy Result</button>
+    <p class="note">Starter demo: this version uses sample templates. AI API integration will be added later.</p>
+  </main>
+
+  <script>
+    function generateIdea() {
+      const category = document.getElementById("category").value;
+      const details = document.getElementById("details").value.trim();
+      const ideas = {
+        "Funny Baby Comedy": {
+          hook: "He is only two, but Dad is already in trouble!",
+          idea: "A toddler catches Dad sneaking a cookie and demands an explanation.",
+          dialogue: 'Toddler: "Dad, what is that?" Dad: "Nothing!" Toddler: "Then why are you chewing?"',
+          prompt: "Create a realistic 15-second vertical 9:16 family comedy video. A toddler catches Dad secretly eating a cookie. Use natural American English dialogue, realistic expressions, quick comedic timing, normal speed, and a funny reaction at the end."
+        },
+        "Family Comedy": {
+          hook: "Mom knows the truth before Dad says a word!",
+          idea: "Dad claims he cleaned the kitchen, but the toddler points out the mess.",
+          dialogue: 'Mom: "You cleaned everything?" Dad: "Of course!" Toddler: "Then what is THAT?"',
+          prompt: "Create a realistic 15-second vertical 9:16 family comedy scene. Dad proudly claims he cleaned the kitchen, but a toddler exposes the mess. Natural acting, American home setting, fast pacing, and a surprising final reaction."
+        },
+        "Funny Animals": {
+          hook: "This pet has absolutely no respect for personal space!",
+          idea: "A dog interrupts its owner's serious video call at the worst possible moment.",
+          dialogue: 'Owner: "As I was saying..." Owner: "Buddy, not now!"',
+          prompt: "Create a realistic 15-second vertical 9:16 comedy video of a playful dog interrupting its owner's work video call. Natural movement, believable reactions, clear visual storytelling, and a funny ending."
+        },
+        "Unexpected Twist": {
+          hook: "Nobody expected the smallest person in the room to win!",
+          idea: "Dad prepares a serious family announcement, but the toddler takes over.",
+          dialogue: 'Dad: "Everyone, I have an announcement." Toddler: "No. Snack time!"',
+          prompt: "Create a realistic 15-second vertical 9:16 family comedy video. Dad begins a serious announcement, but the toddler interrupts with an urgent demand for snacks. Natural American English, expressive reactions, quick pacing, and a punchline."
+        }
+      };
+
+      const selected = ideas[category];
+      document.getElementById("output").textContent =
+        "HOOK\n" + selected.hook +
+        "\n\nVIDEO IDEA\n" + (details || selected.idea) +
+        "\n\nDIALOGUE\n" + selected.dialogue +
+        "\n\nVIDEO PROMPT\n" + selected.prompt;
+    }
+
+    function copyIdea() {
+      const text = document.getElementById("output").innerText;
+      if (text === "Your video idea will appear here.") {
+        alert("Generate an idea first!");
+        return;
+      }
+      navigator.clipboard.writeText(text)
+        .then(() => alert("Result copied!"))
+        .catch(() => alert("Please select and copy the result manually."));
+    }
+  </script>
+</body>
+</html>
