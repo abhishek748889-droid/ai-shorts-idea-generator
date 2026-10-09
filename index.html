@@ -1,133 +1,130 @@
-
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AI Shorts Idea Generator</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f7f7fb">
+  <title>Shorts Studio — Idea Generator</title>
   <style>
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background: #101322;
-      color: white;
-      padding: 30px 16px;
-    }
-    .container {
-      max-width: 720px;
-      margin: 40px auto;
-      background: #1b2035;
-      padding: 28px;
-      border-radius: 18px;
-      box-sizing: border-box;
-    }
-    h1 { color: #a99cff; }
-    p { color: #c8cce0; line-height: 1.6; }
-    label { display: block; margin: 18px 0 8px; }
-    select, textarea, button {
-      width: 100%;
-      padding: 13px;
-      border-radius: 9px;
-      font-size: 16px;
-      box-sizing: border-box;
-    }
-    select, textarea {
-      background: #101322;
-      color: white;
-      border: 1px solid #454b68;
-    }
-    textarea { min-height: 100px; }
-    button {
-      margin-top: 18px;
-      border: 0;
-      background: #7965f5;
-      color: white;
-      font-weight: bold;
-      cursor: pointer;
-    }
-    #output {
-      margin-top: 22px;
-      padding: 18px;
-      background: #101322;
-      border-radius: 10px;
-      white-space: pre-wrap;
-      line-height: 1.7;
-    }
-    .note { font-size: 13px; color: #aeb5ce; }
+    :root { color-scheme:light; --ink:#1d2030; --muted:#696d7d; --line:#e7e8ef; --paper:#fff; --canvas:#f7f7fb; --purple:#6552df; --purple-dark:#5140c7; --purple-soft:#f0edff; --green:#17835d; --amber:#815b13; --shadow:0 14px 40px rgba(29,32,48,.06); }
+    * { box-sizing:border-box; }
+    body { margin:0; background:var(--canvas); color:var(--ink); font:15px/1.5 Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif; }
+    button,input,select,textarea { font:inherit; } button { cursor:pointer; }
+    .topbar { display:flex; align-items:center; justify-content:space-between; gap:18px; padding:17px max(22px,calc((100vw - 1220px)/2)); background:#fff; border-bottom:1px solid var(--line); }
+    .brand { display:flex; align-items:center; gap:11px; font-weight:760; letter-spacing:-.02em; }
+    .brand-mark { width:35px; height:35px; border-radius:12px; display:grid; place-items:center; background:var(--purple-soft); color:var(--purple); font-size:18px; }
+    .brand small { display:block; font-weight:500; color:var(--muted); letter-spacing:0; font-size:11px; }
+    .mode-pill { display:inline-flex; align-items:center; gap:7px; padding:7px 10px; border:1px solid #f0dfb3; border-radius:999px; color:var(--amber); background:#fffaf0; font-size:12px; font-weight:650; }
+    .dot { width:7px; height:7px; border-radius:50%; background:#d49b27; }
+    .page { max-width:1220px; margin:0 auto; padding:34px 22px 60px; }
+    .intro { margin:0 0 27px; } .eyebrow { color:var(--purple); font-size:12px; font-weight:750; text-transform:uppercase; letter-spacing:.09em; }
+    h1 { margin:8px 0; font-size:clamp(28px,4vw,38px); line-height:1.12; letter-spacing:-.045em; }
+    .intro p { color:var(--muted); max-width:700px; margin:0; font-size:15px; }
+    .steps { display:flex; flex-wrap:wrap; gap:9px; margin-top:18px; }
+    .step { display:inline-flex; align-items:center; gap:8px; border:1px solid var(--line); border-radius:999px; padding:7px 11px; color:#575b6d; background:#fff; font-size:12px; }
+    .step b { color:var(--purple); }
+    .workspace { display:grid; grid-template-columns:minmax(265px,330px) minmax(0,1fr); gap:22px; align-items:start; }
+    .panel { background:var(--paper); border:1px solid var(--line); border-radius:18px; box-shadow:var(--shadow); }
+    .form-panel { padding:22px; position:sticky; top:18px; } .panel h2 { margin:0; font-size:17px; letter-spacing:-.02em; }
+    .panel-sub { margin:4px 0 20px; color:var(--muted); font-size:13px; } .field { margin:0 0 17px; }
+    label { display:block; font-size:13px; font-weight:700; margin-bottom:7px; } .hint { color:var(--muted); font-size:12px; margin-top:6px; }
+    select,textarea { display:block; width:100%; border:1px solid #dfe1ea; background:#fff; color:var(--ink); border-radius:10px; padding:11px 12px; outline:none; }
+    select:focus,textarea:focus { border-color:#9c91f0; box-shadow:0 0 0 3px rgba(101,82,223,.12); } textarea { min-height:92px; resize:vertical; }
+    .row { display:grid; grid-template-columns:1fr 1fr; gap:11px; }
+    .primary,.secondary,.quiet { border-radius:10px; padding:10px 13px; font-weight:720; border:1px solid transparent; transition:background .15s ease,transform .15s ease,border-color .15s ease; }
+    .primary { color:#fff; background:var(--purple); width:100%; min-height:45px; } .primary:hover { background:var(--purple-dark); transform:translateY(-1px); }
+    .secondary { color:var(--purple-dark); background:var(--purple-soft); border-color:#e5e0ff; } .secondary:hover { background:#e8e3ff; }
+    .quiet { background:#fff; border-color:var(--line); color:#55596a; } .quiet:hover { background:#f8f8fb; }
+    button:disabled { opacity:.45; cursor:not-allowed; transform:none; }
+    .local-note { margin-top:15px; padding:12px; border:1px solid #ece9fb; background:#faf9ff; border-radius:11px; color:#615a86; font-size:12px; }
+    .local-note strong { color:#403777; } .workspace-right { min-width:0; } .results-panel { overflow:hidden; }
+    .results-head { display:flex; align-items:center; justify-content:space-between; gap:16px; padding:18px 20px; border-bottom:1px solid var(--line); }
+    .results-heading { display:flex; align-items:baseline; flex-wrap:wrap; gap:9px; } .count { color:var(--muted); font-size:12px; }
+    .tabs { display:flex; gap:6px; margin-top:16px; }
+    .tab { border:0; background:transparent; color:var(--muted); padding:7px 10px; border-radius:8px; font-size:13px; font-weight:700; }
+    .tab[aria-selected="true"] { color:var(--purple-dark); background:var(--purple-soft); }
+    .result-actions { display:flex; flex-wrap:wrap; gap:8px; } .result-actions button { padding:8px 10px; font-size:12px; }
+    .results-body { padding:17px; }
+    .empty { padding:44px 20px; text-align:center; border:1px dashed #d8d9e4; border-radius:14px; color:var(--muted); background:#fcfcfe; }
+    .empty-icon { width:48px; height:48px; margin:0 auto 12px; border-radius:15px; display:grid; place-items:center; background:var(--purple-soft); color:var(--purple); font-size:22px; }
+    .empty h3 { margin:0 0 5px; color:var(--ink); font-size:16px; } .empty p { margin:0 auto; max-width:380px; font-size:13px; }
+    .idea-card { border:1px solid var(--line); border-radius:14px; padding:17px; background:#fff; margin-bottom:13px; } .idea-card:last-child { margin-bottom:0; }
+    .card-top { display:flex; align-items:flex-start; justify-content:space-between; gap:14px; } .rankline { display:flex; align-items:center; flex-wrap:wrap; gap:8px; margin-bottom:7px; }
+    .rank { color:var(--purple-dark); background:var(--purple-soft); border-radius:999px; padding:4px 8px; font-size:11px; font-weight:760; }
+    .score { color:var(--green); background:#edf8f2; border-radius:999px; padding:4px 8px; font-size:11px; font-weight:730; }
+    .idea-card h3 { margin:0; font-size:17px; letter-spacing:-.02em; line-height:1.28; } .one-line { color:#55596a; margin:8px 0 12px; font-size:13px; }
+    .hook-box { padding:10px 12px; background:#faf9ff; border-left:3px solid #9e92f1; border-radius:0 8px 8px 0; font-size:13px; }
+    .hook-box strong { display:block; font-size:10px; color:#716a99; text-transform:uppercase; letter-spacing:.07em; margin-bottom:2px; }
+    .card-actions { display:flex; flex-wrap:wrap; gap:7px; margin-top:13px; } .card-actions button { padding:7px 10px; font-size:12px; }
+    .saved-mark { color:var(--green); font-size:12px; font-weight:700; } details { margin-top:13px; border-top:1px solid #f0f0f4; padding-top:11px; }
+    summary { color:var(--purple-dark); cursor:pointer; font-size:12px; font-weight:730; } .detail-section { margin-top:13px; }
+    .detail-section h4 { margin:0 0 6px; font-size:11px; color:#737789; text-transform:uppercase; letter-spacing:.07em; }
+    .detail-section p { margin:0; white-space:pre-wrap; font-size:13px; color:#444858; }
+    .beats { display:grid; gap:7px; list-style:none; padding:0; margin:8px 0 0; }
+    .beats li { display:grid; grid-template-columns:54px 1fr; gap:8px; font-size:12px; color:#515566; } .beats time { color:var(--purple-dark); font-weight:750; }
+    .toast { position:fixed; bottom:20px; left:50%; transform:translate(-50%,20px); opacity:0; pointer-events:none; transition:.2s ease; padding:10px 14px; border-radius:10px; background:#202333; color:#fff; font-size:13px; z-index:5; box-shadow:0 8px 24px rgba(0,0,0,.18); }
+    .toast.show { opacity:1; transform:translate(-50%,0); } .footnote { color:var(--muted); text-align:center; font-size:11px; margin:15px 0 0; }
+    @media(max-width:850px) { .workspace { grid-template-columns:1fr; } .form-panel { position:static; } }
+    @media(max-width:520px) { .topbar { padding:13px 16px; } .page { padding:25px 14px 42px; } .workspace { gap:14px; } .form-panel { padding:17px; } .results-head { align-items:flex-start; flex-direction:column; padding:16px; } .results-body { padding:11px; } .idea-card { padding:14px; } .mode-pill { font-size:10px; } }
   </style>
 </head>
 <body>
-  <main class="container">
-    <h1>🎬 AI Shorts Idea Generator</h1>
-    <p>Create funny short-video concepts, hooks and 15-second prompts for your next video.</p>
-
-    <label for="category">Choose your video category</label>
-    <select id="category">
-      <option>Funny Baby Comedy</option>
-      <option>Family Comedy</option>
-      <option>Funny Animals</option>
-      <option>Unexpected Twist</option>
-    </select>
-
-    <label for="details">Describe your idea (optional)</label>
-    <textarea id="details" placeholder="Example: A toddler catches Dad secretly eating cookies..."></textarea>
-
-    <button onclick="generateIdea()">Generate Video Idea</button>
-
-    <div id="output" aria-live="polite">Your video idea will appear here.</div>
-    <button onclick="copyIdea()">Copy Result</button>
-    <p class="note">Starter demo: this version uses sample templates. AI API integration will be added later.</p>
-  </main>
-
+  <header class="topbar"><div class="brand"><div class="brand-mark" aria-hidden="true">▶</div><div>Shorts Studio<small>Idea Generator</small></div></div><div class="mode-pill"><span class="dot" aria-hidden="true"></span>Starter demo · no AI connected</div></header>
+  <main class="page">
+    <section class="intro" aria-labelledby="page-title"><div class="eyebrow">Short-form video planner</div><h1 id="page-title">Turn a tiny moment into a Short.</h1><p>Plan a funny, family-friendly 15-second video with a clear hook, a natural US English punchline and ready-to-copy post text.</p><div class="steps" aria-label="How to use"><span class="step"><b>1</b> Pick a direction</span><span class="step"><b>2</b> Create a sample batch</span><span class="step"><b>3</b> Save or download favorites</span></div></section>
+    <section class="workspace">
+      <form class="panel form-panel" id="generator-form"><h2>Set up your batch</h2><p class="panel-sub">A simple starting point for your next video.</p>
+        <div class="field"><label for="category">Video category</label><select id="category"><option value="baby">Baby & toddler comedy</option><option value="family">Family comedy</option></select></div>
+        <div class="row"><div class="field"><label for="audience">Audience</label><select id="audience"><option value="US" selected>United States</option><option value="global">Global English</option></select></div><div class="field"><label for="batch-size">Ideas</label><select id="batch-size"><option value="10" selected>10 ideas</option><option value="20">20 ideas</option><option value="30">30 ideas</option><option value="40">40 ideas</option><option value="50">50 ideas</option><option value="60">60 ideas</option><option value="70">70 ideas</option><option value="80">80 ideas</option><option value="90">90 ideas</option><option value="100">100 ideas</option></select></div></div>
+        <div class="field"><label for="angle">Your angle <span style="font-weight:500;color:#777b8a">(optional)</span></label><textarea id="angle" maxlength="240" placeholder="Example: A toddler catches Dad sneaking one last cookie."></textarea><div class="hint">Keep it to one simple, filmable moment.</div></div>
+        <button class="primary" type="submit">Create sample batch</button><div class="local-note"><strong>Demo mode:</strong> this page mixes built-in examples on your device. It does not research live trends or use an AI service yet. Larger batches repeat starter stories as variations.</div>
+      </form>
+      <div class="workspace-right"><section class="panel results-panel" aria-labelledby="results-title"><div class="results-head"><div><div class="results-heading"><h2 id="results-title">Your ideas</h2><span class="count" id="idea-count">No batch yet</span></div><div class="tabs" role="tablist" aria-label="Idea list"><button class="tab" id="all-tab" type="button" role="tab" aria-selected="true">Current batch</button><button class="tab" id="saved-tab" type="button" role="tab" aria-selected="false">Saved <span id="saved-count">0</span></button></div></div><div class="result-actions"><button class="quiet" type="button" id="download-batch" disabled>Download batch</button><button class="secondary" type="button" id="save-batch" disabled>Save all</button></div></div><div class="results-body" id="results" aria-live="polite"><div class="empty"><div class="empty-icon" aria-hidden="true">✦</div><h3>Your first batch will show up here</h3><p>Choose a category and batch size, then create a sample batch. You can open each idea for its scene plan and video prompt.</p></div></div></section><p class="footnote">“Creative fit” is a demo score based on story shape. It is not a live trend signal or a promise of views.</p></div>
+    </section>
+  </main><div class="toast" id="toast" role="status" aria-live="polite"></div>
   <script>
-    function generateIdea() {
-      const category = document.getElementById("category").value;
-      const details = document.getElementById("details").value.trim();
-      const ideas = {
-        "Funny Baby Comedy": {
-          hook: "He is only two, but Dad is already in trouble!",
-          idea: "A toddler catches Dad sneaking a cookie and demands an explanation.",
-          dialogue: 'Toddler: "Dad, what is that?" Dad: "Nothing!" Toddler: "Then why are you chewing?"',
-          prompt: "Create a realistic 15-second vertical 9:16 family comedy video. A toddler catches Dad secretly eating a cookie. Use natural American English dialogue, realistic expressions, quick comedic timing, normal speed, and a funny reaction at the end."
-        },
-        "Family Comedy": {
-          hook: "Mom knows the truth before Dad says a word!",
-          idea: "Dad claims he cleaned the kitchen, but the toddler points out the mess.",
-          dialogue: 'Mom: "You cleaned everything?" Dad: "Of course!" Toddler: "Then what is THAT?"',
-          prompt: "Create a realistic 15-second vertical 9:16 family comedy scene. Dad proudly claims he cleaned the kitchen, but a toddler exposes the mess. Natural acting, American home setting, fast pacing, and a surprising final reaction."
-        },
-        "Funny Animals": {
-          hook: "This pet has absolutely no respect for personal space!",
-          idea: "A dog interrupts its owner's serious video call at the worst possible moment.",
-          dialogue: 'Owner: "As I was saying..." Owner: "Buddy, not now!"',
-          prompt: "Create a realistic 15-second vertical 9:16 comedy video of a playful dog interrupting its owner's work video call. Natural movement, believable reactions, clear visual storytelling, and a funny ending."
-        },
-        "Unexpected Twist": {
-          hook: "Nobody expected the smallest person in the room to win!",
-          idea: "Dad prepares a serious family announcement, but the toddler takes over.",
-          dialogue: 'Dad: "Everyone, I have an announcement." Toddler: "No. Snack time!"',
-          prompt: "Create a realistic 15-second vertical 9:16 family comedy video. Dad begins a serious announcement, but the toddler interrupts with an urgent demand for snacks. Natural American English, expressive reactions, quick pacing, and a punchline."
-        }
-      };
-
-      const selected = ideas[category];
-      document.getElementById("output").textContent =
-        "HOOK\n" + selected.hook +
-        "\n\nVIDEO IDEA\n" + (details || selected.idea) +
-        "\n\nDIALOGUE\n" + selected.dialogue +
-        "\n\nVIDEO PROMPT\n" + selected.prompt;
-    }
-
-    function copyIdea() {
-      const text = document.getElementById("output").innerText;
-      if (text === "Your video idea will appear here.") {
-        alert("Generate an idea first!");
-        return;
-      }
-      navigator.clipboard.writeText(text)
-        .then(() => alert("Result copied!"))
-        .catch(() => alert("Please select and copy the result manually."));
-    }
+    const STORAGE_KEY = 'shorts-studio-saved-v1';
+    const seeds = [
+      {category:'baby',title:'The tiny cookie detective',hook:'Dad thinks nobody noticed the cookie crumbs.',premise:'A preschooler spots Dad sneaking a cookie and calmly points out the crumbs on his shirt.',adultLine:'“I was just checking if they’re fresh.”',childLine:'“Then why are there crumbs on your shirt?”',reveal:'The child points to the crumbs, then notices Dad is holding another cookie behind his back.',punchline:'Dad freezes; the child gives the camera a knowing little look.',score:94,tags:['#ToddlerComedy','#FamilyShorts','#FunnyShorts','#BabyComedy','#USShorts']},
+      {category:'baby',title:'One more bedtime story',hook:'Dad said “one last story.” The book stack says otherwise.',premise:'At bedtime, a child brings one small book after another while Dad tries to keep his promise.',adultLine:'“Okay, one last story.”',childLine:'“This one is the last-last one.”',reveal:'The child slides a second, much bigger book into Dad’s lap.',punchline:'Dad looks at the camera, opens the book, and the child settles in with a proud grin.',score:91,tags:['#BedtimeComedy','#FamilyHumor','#ToddlerComedy','#FunnyShorts','#USShorts']},
+      {category:'baby',title:'The very loud whisper',hook:'Mom asked for a whisper. The whisper had other plans.',premise:'Mom asks her preschooler to whisper a secret while they set up a family surprise.',adultLine:'“Tell me quietly so it stays a surprise.”',childLine:'“I AM being quiet!”',reveal:'The child leans in and repeats the same sentence at full volume.',punchline:'Mom tries not to laugh; the child proudly puts a finger to their lips.',score:90,tags:['#FamilyComedy','#ToddlerHumor','#FunnyShorts','#ParentLife','#USShorts']},
+      {category:'family',title:'The missing remote mystery',hook:'The whole family is searching for the remote.',premise:'Everyone looks for the TV remote while Dad keeps giving helpful suggestions from the couch.',adultLine:'“Maybe check under the cushions?”',childLine:'“Dad, it’s in your hand.”',reveal:'The child points to the remote Dad has been holding the whole time.',punchline:'Dad looks down, then gives a sheepish smile as the family laughs.',score:87,tags:['#FamilyShorts','#DadJokes','#ToddlerComedy','#FunnyShorts','#USShorts']},
+      {category:'family',title:'The family photo director',hook:'Everyone is ready for the family photo—except the director.',premise:'A family lines up for a quick photo, and the preschooler takes charge of the pose.',adultLine:'“Everybody smile for the picture.”',childLine:'“Wait. Dad, your hair.”',reveal:'The child gently points at one stray hair while everyone holds their pose.',punchline:'The camera timer goes off as Dad tries to fix it and everyone bursts out laughing.',score:86,tags:['#FamilyPhoto','#FamilyComedy','#ToddlerHumor','#FunnyShorts','#USShorts']},
+      {category:'baby',title:'The cardboard-box upgrade',hook:'The delivery box is more exciting than the new toy.',premise:'A parent opens a new toy while their preschooler happily turns the empty box into a pretend spaceship.',adultLine:'“Want to see the new toy?”',childLine:'“I already have a spaceship.”',reveal:'The child points proudly at the empty box, decorated with two big paper stars.',punchline:'The parent sits beside the box and asks where the co-pilot should sit.',score:84,tags:['#Playtime','#FamilyShorts','#ToddlerComedy','#FunnyShorts','#USShorts']},
+      {category:'baby',title:'The snack-time negotiation',hook:'The snack request arrives right on schedule.',premise:'A child finishes a small after-school snack, then notices Dad has opened a different snack for himself.',adultLine:'“Snack time is over for now.”',childLine:'“I’m not asking for a snack. I’m asking what you’re having.”',reveal:'The child leans over with a curious smile while Dad tries to hide the package.',punchline:'Dad slides the package across the table; the child nods like a deal is done.',score:83,tags:['#SnackTime','#ParentLife','#FamilyComedy','#FunnyShorts','#USShorts']},
+      {category:'family',title:'The living-room workout coach',hook:'Dad’s workout gets a very small coach.',premise:'Dad starts a gentle living-room stretch while the preschooler copies the pose with a stuffed animal.',adultLine:'“Ready for one more stretch?”',childLine:'“Teddy is doing it better.”',reveal:'The child raises the stuffed toy in a perfect tiny victory pose.',punchline:'Dad gives Teddy a respectful high-five and the child announces the workout is done.',score:82,tags:['#FamilyFun','#ToddlerComedy','#ParentLife','#FunnyShorts','#USShorts']},
+      {category:'family',title:'The serious morning announcement',hook:'Dad has an important announcement. The kid has a better one.',premise:'Dad gathers the family for a serious announcement at the breakfast table.',adultLine:'“Everyone, I have something important to say.”',childLine:'“Pancakes are ready!”',reveal:'The child points toward the kitchen just as Dad tries to continue.',punchline:'Dad pauses, turns toward the pancakes, and calls the meeting to order.',score:80,tags:['#BreakfastComedy','#FamilyShorts','#ToddlerHumor','#FunnyShorts','#USShorts']},
+      {category:'baby',title:'The tiny umbrella expert',hook:'The forecast says sunshine. The toddler says be prepared.',premise:'On a bright day, a preschooler insists on bringing a little umbrella for the walk to the mailbox.',adultLine:'“It’s sunny, do we need the umbrella?”',childLine:'“Just in case, Dad.”',reveal:'A sprinkler clicks on in the yard in the distance.',punchline:'Dad takes the umbrella and follows the child down the path, both smiling.',score:79,tags:['#ToddlerComedy','#FamilyMoments','#FunnyShorts','#CuteKids','#USShorts']},
+      {category:'baby',title:'The bedtime water refill',hook:'The bedtime routine has one last request.',premise:'Just after lights-out, a child asks for a small drink of water and Dad returns with the cup.',adultLine:'“Here you go. Ready to sleep?”',childLine:'“Now I need to tell you something.”',reveal:'Dad sits on the edge of the bed, expecting a big secret.',punchline:'The child whispers, “I love you,” and Dad gives a warm goodnight hug.',score:78,tags:['#FamilyMoments','#BedtimeRoutine','#ToddlerHumor','#Shorts','#USShorts']},
+      {category:'family',title:'The helpful grocery list',hook:'The little shopping assistant has one priority.',premise:'A parent checks a short grocery list while their child rides safely in the cart seat.',adultLine:'“What else should we put on the list?”',childLine:'“More bananas. For emergencies.”',reveal:'The child points very seriously at the bananas while the parent checks the list.',punchline:'The parent adds bananas; the child gives a satisfied little nod.',score:77,tags:['#GroceryTrip','#FamilyComedy','#ToddlerComedy','#FunnyShorts','#USShorts']}
+    ];
+    const categoryLabels={baby:'Baby & toddler comedy',family:'Family comedy'};
+    const cameraStyles=['Begin with a steady medium shot at the child’s eye level.','Open on a gentle over-the-shoulder shot, then reveal the child’s expression.','Start with a close-up of the important prop, then widen to both characters.','Use a calm two-shot with a subtle push-in during the punchline.','Frame the scene like a warm family home video with clear faces and hands.'];
+    let ideas=[]; let saved=loadSaved(); let view='all'; let toastTimer;
+    function loadSaved(){try{const value=JSON.parse(localStorage.getItem(STORAGE_KEY)||'[]');return Array.isArray(value)?value:[]}catch(error){return[]}}
+    function persistSaved(){try{localStorage.setItem(STORAGE_KEY,JSON.stringify(saved));return true}catch(error){showToast('Your browser could not save this idea.');return false}}
+    function escapeHTML(value){return String(value).replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
+    function makePrompt(item,audience,styleIndex){const audienceText=audience==='US'?'for a United States audience':'for a broad English-speaking audience';const setting=audience==='US'?'a bright, lived-in American family home with warm natural window light and everyday details':'a bright, welcoming family home with warm natural window light and everyday details';const dialogueStyle=audience==='US'?'natural American English':'clear, conversational English';return 'Create a polished 15-second vertical 9:16 family-comedy Short '+audienceText+'. Setting: '+setting+' and a clean uncluttered background. Characters: one caring parent and one preschool-age child; show natural expressions, believable proportions, consistent clothing and faces throughout. Story: '+item.premise+' Visual direction: '+cameraStyles[styleIndex%cameraStyles.length]+' Keep the action simple, readable on a phone, and easy to understand without sound. Timing: 0:00–0:02 visual hook — '+item.hook+' 0:02–0:06 setup — '+item.adultLine+' 0:06–0:11 reveal — '+item.reveal+' 0:11–0:15 punchline — '+item.punchline+' Dialogue: parent says '+item.adultLine+' Child says '+item.childLine+' in short, '+dialogueStyle+', with a real conversational pause before the laugh. No narrator. Performance: playful and affectionate, never mean or embarrassing; keep the comedy gentle and family-friendly. Safety and finish: the child stays on the floor or safely seated with an adult within arm’s reach; no risky stunts, choking hazards, unattended child, or distress. Use one continuous scene, natural room tone, accurate lip sync, and end on a clear reaction before 15 seconds. Do not add subtitles, logos, watermarks, or readable on-screen text; add captions later during editing.'}
+    function buildIdea(seed,index,angle,audience,category){const cycle=Math.floor(index/seeds.length);const variation=cycle?' · variation '+(cycle+1):'';const score=Math.max(70,Math.min(98,seed.score-(cycle%4)+((index*3)%3)));const item={id:'idea-'+Date.now()+'-'+index+'-'+Math.random().toString(36).slice(2,7),title:seed.title+variation,hook:seed.hook,premise:angle?angle+' '+seed.premise:seed.premise,adultLine:seed.adultLine,childLine:seed.childLine,reveal:seed.reveal,punchline:seed.punchline,score:score,audience:audience,category:categoryLabels[category],rank:index+1,tags:seed.tags,caption:seed.premise+' Wait for the little plot twist. 🎬 '+seed.tags.slice(0,3).join(' '),beats:[['0–2 sec','Open on the visual hook: '+seed.hook],['2–6 sec','Show the simple setup. Parent: '+seed.adultLine],['6–11 sec','Child spots the detail: '+seed.reveal],['11–15 sec','Hold for the warm reaction: '+seed.punchline]]};item.prompt=makePrompt(item,audience,index);return item}
+    function createBatch(){const count=Number(document.getElementById('batch-size').value);const angle=document.getElementById('angle').value.trim();const audience=document.getElementById('audience').value;const category=document.getElementById('category').value;const pool=seeds.filter(function(s){return s.category===category});ideas=Array.from({length:count},function(_,i){return buildIdea(pool[i%pool.length],i,angle,audience,category)}).sort(function(a,b){return b.score-a.score});ideas.forEach(function(item,i){item.rank=i+1});view='all';updateTabs();render();showToast(count+' sample ideas created on this device.')}
+    function isSaved(item){return saved.some(function(x){return x.title===item.title&&x.hook===item.hook})}
+    function safeText(item){return['TITLE: '+item.title,'HOOK: '+item.hook,'VIDEO IDEA: '+item.premise,'15-SECOND BEATS:',item.beats.map(function(b){return b[0]+' — '+b[1]}).join('\n'),'VIDEO PROMPT: '+item.prompt,'CAPTION: '+item.caption,'HASHTAGS: '+item.tags.join(' '),'CREATIVE FIT: '+item.score+'/100 (demo story-structure score; not a view prediction)'].join('\n\n')}
+    function cardHTML(item){const yes=isSaved(item);return'<article class="idea-card"><div class="card-top"><div><div class="rankline"><span class="rank">#'+item.rank+' · '+escapeHTML(item.category)+'</span><span class="score">Creative fit '+item.score+'/100</span>'+(yes?'<span class="saved-mark">Saved</span>':'')+'</div><h3>'+escapeHTML(item.title)+'</h3></div></div><p class="one-line">'+escapeHTML(item.premise)+'</p><div class="hook-box"><strong>Opening hook</strong>'+escapeHTML(item.hook)+'</div><div class="card-actions"><button class="secondary" type="button" data-action="save" data-id="'+escapeHTML(item.id)+'">'+(yes?'Remove saved':'Save idea')+'</button><button class="quiet" type="button" data-action="copy" data-id="'+escapeHTML(item.id)+'">Copy idea pack</button><button class="quiet" type="button" data-action="download" data-id="'+escapeHTML(item.id)+'">Download</button></div><details><summary>Open 15-second plan, prompt & post copy</summary><div class="detail-section"><h4>Scene plan</h4><ul class="beats">'+item.beats.map(function(b){return'<li><time>'+escapeHTML(b[0])+'</time><span>'+escapeHTML(b[1])+'</span></li>'}).join('')+'</ul></div><div class="detail-section"><h4>Dialogue</h4><p>Parent: '+escapeHTML(item.adultLine)+'<br>Child: '+escapeHTML(item.childLine)+'</p></div><div class="detail-section"><h4>Detailed video prompt</h4><p>'+escapeHTML(item.prompt)+'</p></div><div class="detail-section"><h4>Title</h4><p>'+escapeHTML(item.title)+'</p></div><div class="detail-section"><h4>Caption</h4><p>'+escapeHTML(item.caption)+'</p></div><div class="detail-section"><h4>Hashtags</h4><p>'+escapeHTML(item.tags.join(' '))+'</p></div></details></article>'}
+    function render(){const root=document.getElementById('results');const visible=view==='saved'?saved:ideas;document.getElementById('idea-count').textContent=view==='saved'?saved.length+(saved.length===1?' saved idea':' saved ideas'):ideas.length?ideas.length+' ideas · ranked by demo creative fit':'No batch yet';document.getElementById('saved-count').textContent=String(saved.length);document.getElementById('download-batch').disabled=view==='saved'?saved.length===0:ideas.length===0;document.getElementById('save-batch').disabled=view==='saved'||ideas.length===0;if(!visible.length){root.innerHTML=view==='saved'?'<div class="empty"><div class="empty-icon" aria-hidden="true">♡</div><h3>No saved ideas yet</h3><p>Save an idea from your current batch and it will stay in this browser on this device.</p></div>':'<div class="empty"><div class="empty-icon" aria-hidden="true">✦</div><h3>Your first batch will show up here</h3><p>Choose a category and batch size, then create a sample batch. You can open each idea for its scene plan and video prompt.</p></div>';return}root.innerHTML=visible.map(cardHTML).join('')}
+    function updateTabs(){document.getElementById('all-tab').setAttribute('aria-selected',String(view==='all'));document.getElementById('saved-tab').setAttribute('aria-selected',String(view==='saved'))}
+    function findItem(id){return ideas.concat(saved).find(function(item){return item.id===id})}
+    function saveItem(item){const i=saved.findIndex(function(x){return x.title===item.title&&x.hook===item.hook});if(i>=0){saved.splice(i,1);showToast('Removed from saved ideas.')}else{saved.unshift(Object.assign({},item));showToast('Saved in this browser.')}persistSaved();render()}
+    function downloadFile(name,content,mime){const blob=new Blob([content],{type:mime});const link=document.createElement('a');link.href=URL.createObjectURL(blob);link.download=name;document.body.appendChild(link);link.click();link.remove();setTimeout(function(){URL.revokeObjectURL(link.href)},1000)}
+    function slug(text){return text.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'').slice(0,52)||'shorts-idea'}
+    async function copyText(text){try{await navigator.clipboard.writeText(text)}catch(error){const field=document.createElement('textarea');field.value=text;field.style.position='fixed';field.style.opacity='0';document.body.appendChild(field);field.select();document.execCommand('copy');field.remove()}showToast('Copied to clipboard.')}
+    function showToast(message){const el=document.getElementById('toast');el.textContent=message;el.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(function(){el.classList.remove('show')},2200)}
+    document.getElementById('generator-form').addEventListener('submit',function(e){e.preventDefault();createBatch()});
+    document.getElementById('all-tab').addEventListener('click',function(){view='all';updateTabs();render()});
+    document.getElementById('saved-tab').addEventListener('click',function(){view='saved';updateTabs();render()});
+    document.getElementById('results').addEventListener('click',function(e){const button=e.target.closest('button[data-action]');if(!button)return;const item=findItem(button.dataset.id);if(!item)return;if(button.dataset.action==='save')saveItem(item);if(button.dataset.action==='copy')copyText(safeText(item));if(button.dataset.action==='download')downloadFile(slug(item.title)+'.txt',safeText(item),'text/plain;charset=utf-8')});
+    document.getElementById('download-batch').addEventListener('click',function(){const items=view==='saved'?saved:ideas;if(items.length){downloadFile('shorts-ideas.json',JSON.stringify(items,null,2),'application/json;charset=utf-8');showToast('Batch downloaded as JSON.')}});
+    document.getElementById('save-batch').addEventListener('click',function(){const added=ideas.filter(function(item){return!isSaved(item)}).map(function(item){return Object.assign({},item)});saved=added.concat(saved);persistSaved();render();showToast(added.length?added.length+' ideas saved in this browser.':'All ideas in this batch are already saved.')});
+    render();
   </script>
 </body>
 </html>
