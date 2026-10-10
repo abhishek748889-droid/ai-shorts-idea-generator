@@ -351,7 +351,7 @@
           <section class="panel results-panel" aria-labelledby="results-title">
             <div class="results-head">
               <div>
-                <div class="results-heading"><h2 id="results-title">The idea list</h2><span class="count" id="idea-count">No batch yet</span></div>
+                <div class="results-heading"><h2 id="results-title">Your video ideas</h2><span class="count" id="idea-count">No batch yet</span></div>
                 <div class="tabs" role="tablist" aria-label="Idea list">
                   <button class="tab" id="all-tab" type="button" role="tab" aria-selected="true">This batch</button>
                   <button class="tab" id="saved-tab" type="button" role="tab" aria-selected="false">Saved <span id="saved-count">0</span></button>
@@ -363,11 +363,11 @@
               <div class="empty"><div class="empty-icon" aria-hidden="true">✳</div><h3>Your next idea lands here.</h3><p>Set a scene and build a sample batch. Open any idea to see its timing, prompt and post copy.</p></div>
             </div>
           </section>
-          <p class="footnote">Creative fit is a demo score based on story shape. It is not a live trend signal or a promise of views.</p>
+          <p class="footnote">Built-in starters are a place to begin. Bring your experience and make the finished video yours.</p>
         </div>
       </section>
     </section>
-    <footer class="site-footer"><span><strong>Shorts Studio</strong> · A story workshop for your next Short.</span><span>Use sample ideas as a starting point. Make them yours.</span></footer>
+    <footer class="site-footer"><span><strong>Shorts Studio</strong> · A creator’s idea desk for Shorts and long-form video.</span><span>24 built-in starters · save ideas in this browser.</span></footer>
   </main>
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
   <script>
@@ -401,6 +401,7 @@ function makePlan(seed,lang,format,angle){
  return{id:"idea-"+Date.now()+"-"+Math.random().toString(36).slice(2,9),title:title,hook:hook,premise:base,category:topic,categoryId:seed.c,lang:lang,format:format,rank:0,plan:plan,prompt:prompt,caption:caption,thumbnail:thumbnail,tags:["#"+topicTags[seed.c],format==="short"?"#ShortVideo":"#LongFormVideo","#CreatorIdeas"]};
 }
 function createBatch(){
+ document.documentElement.lang=document.getElementById("language").value==="hi"?"hi":document.getElementById("language").value==="hx"?"hi-Latn":"en";
  const format=document.getElementById("format-type").value, category=document.getElementById("category").value, lang=document.getElementById("language").value, requested=Number(document.getElementById("batch-size").value), angle=document.getElementById("angle").value.trim();
  const pool=category==="all"?seeds:seeds.filter(function(seed){return seed.c===category}), selected=shuffle(pool).slice(0,Math.min(requested,pool.length));
  ideas=selected.map(function(seed){return makePlan(seed,lang,format,angle)});ideas.forEach(function(item,i){item.rank=i+1});
